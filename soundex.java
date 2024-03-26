@@ -4,7 +4,11 @@ public class soundex {
     public static void main(String[] args) throws Exception {
         Scanner scanner = new Scanner(System.in);
         String word = scanner.nextLine();
-        getSoundex(word);
+        while (getSoundex(word).equals("-1")) {
+
+            word = scanner.nextLine();
+
+        }
 
     }
 
@@ -52,7 +56,7 @@ public class soundex {
         char ch;
         word = word.toUpperCase();
         word = removeAdjacentDuplicates(word);
-        System.out.println(word);
+        System.out.println(word + " 61 buildcode");
         soundexWord += word.charAt(0);
         for (int i = 1; i < word.length(); i++) {
             ch = word.charAt(i);
@@ -71,18 +75,23 @@ public class soundex {
      * @return
      */
     public static String removeAdjacentDuplicates(String word) {
+
         String newWord = "";
         char ch, chNext = 'a';
-        for (int i = 0; i < word.length() - 1; i++) {
-            ch = word.charAt(i);
-            chNext = word.charAt(i + 1);
-            if (ch != chNext) {
-                newWord += ch;
+        if (word.length() > 1) {
+            for (int i = 0; i < word.length() - 1; i++) {
+                ch = word.charAt(i);
+                chNext = word.charAt(i + 1);
+                if (ch != chNext) {
+                    newWord += ch;
+                }
+
             }
-
+            newWord += chNext;
+        } else {
+            newWord = word;
         }
-        newWord += chNext;
-
+        System.out.println(newWord + " 95 removeadjent");
         return newWord;
     }
 
@@ -91,32 +100,41 @@ public class soundex {
         String newWord = "";
         word = word.toUpperCase();
         newWord += word.charAt(0);
-        // int i = 1;
-        // int j=0;
         for (int i = 1; i < word.length(); i++) {
             ch = word.charAt(i);
             if (!word2.contains(Character.toString(ch))) {
                 newWord += ch;
             }
         }
-
+        System.out.println(newWord + " 111 removeletters");
         return newWord;
     }
 
     public static String padCode(String word) {
         String newWord = word;
-        if (word.length() == 2) {
+        int dgt=4-word.length();
+        if (dgt<0){
+           newWord= word.substring(0,4);
+        }
+        else {
+            for(int i=0;i<dgt;i++){
+                newWord+="0";
+            }
+        }
+       /* if (word.length() == 2) {
             newWord += "00";
         } else if (word.length() == 3) {
             newWord += "0";
-
+            
         } else if (word.length() == 1) {
             newWord += "000";
         } else if (word.length() > 4) {
-            for (int i = 0; i < 4; i++) {
-                newWord += word.charAt(i);
-            }
+            
         }
+        for(int i=dgt;i<4;i++){
+            
+        }*/
+        System.out.println(newWord + " 127 padcode");
         return newWord;
     }
 
@@ -125,11 +143,15 @@ public class soundex {
         boolean isAlpha = isAlphaWord(word);
         char ch;
         if (!isAlpha) {
-            System.out.println("Characters must be alphabetic...");//return "";
+            System.out.println("Characters must be alphabetic...");// return "";
+            return "-1";
         } else {
             soundexWord = removeLetters(word, "HWYAEIOU");
-            
-            System.out.println(soundexWord);
+            soundexWord = buildCode(soundexWord);
+            soundexWord = removeAdjacentDuplicates(soundexWord);
+            soundexWord = padCode(soundexWord);
+            System.out.println(soundexWord + " 144 getsoundex");
+            return soundexWord;
         }
 
     }
